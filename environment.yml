@@ -1,0 +1,15 @@
+name: fordy
+
+channels:
+  - defaults
+  - conda-forge
+
+dependencies:
+  - python=3.12
+
+  - requests
+  - regex
+  - pip  
+
+  - pip:
+    - DrissionPage
