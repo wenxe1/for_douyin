@@ -1,4 +1,4 @@
-# fou_douyin
+# for_douyin
 
 ## 环境配置
 
