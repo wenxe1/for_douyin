@@ -3,7 +3,7 @@
 ## 环境配置
 
 1. 创建环境: `conda env create -f environment.yml`
-2. 初始化浏览器: 打开`initial.py`，更改`path`参数并运行该文件
+2. 初始化浏览器: 打开`initial.py`，更改`path`参数并运行该程序
 
 ```Python
 from DrissionPage import ChromiumOptions
