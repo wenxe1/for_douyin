@@ -23,7 +23,7 @@ dp = ChromiumPage()
 # 监听数据包特征
 dp.listen.start("https://www.douyin.com/aweme/v1/web/general/search/stream/")
 # 打开网页
-hot_title = "6月16-24岁劳动力失业率公布"
+hot_title = "f1"
 dp.get("https://www.douyin.com/search/{}".format(hot_title))
 # 等待数据包加载
 r = dp.listen.wait()
@@ -52,6 +52,11 @@ collect_count = statistics['collect_count']
 share_count = statistics['share_count']
 modal_id = aweme['aweme_id']
 author_name = aweme['author']['nickname']
+topic_tags = [t.rstrip("，。！#") for t in re.findall(r"#([^#\s]+)", file_video_title)]
+video_tags = [
+    aweme['video_tag'][j]['tag_name']
+    for j in range(len(aweme['video_tag']))
+]
 video_url = f"https://www.douyin.com/user/{author_name}?modal_id={modal_id}"
 download_url = aweme['video']['play_addr']['url_list'][0]
 print(f"标题：{file_video_title}")
@@ -59,11 +64,13 @@ print(f"点赞数：{digg_count}")
 print(f"评论数：{comment_count}")
 print(f"收藏数：{collect_count}")
 print(f"分享数：{share_count}")
+print(f"话题标签：{', '.join(topic_tags)}")
+print(f"视频标签：{', '.join(video_tags)}")
 print(f"视频链接：{video_url}")
 print(f"视频下载链接：{download_url}")
 # 保存数据
 video_content = requests.get(url=download_url, headers=headers).content
 os.makedirs("video", exist_ok=True)
-with open(f"video\\{video_title}.mp4", "wb") as f:
+with open(f"video\\{file_video_title}.mp4", "wb") as f:
     f.write(video_content)
 

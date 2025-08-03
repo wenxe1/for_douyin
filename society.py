@@ -10,8 +10,8 @@ from datetime import datetime
 
 start_time = time.time()
 time_str = datetime.now().strftime('%Y%m%d_%H%M%S')
-folder_name = f"hot_videos_{time_str}"
-json_file_name = f"hot_videos_data_{time_str}.json"
+folder_name = f"society_videos_{time_str}"
+json_file_name = f"society_videos_data_{time_str}.json"
 
 headers = {
     "referer": "https://www.douyin.com/",
@@ -27,22 +27,24 @@ def clean_filename(original_title):
 
 dp = ChromiumPage()
 
-print(" 🕒 正在获取抖音热点榜...")
-# 获取热点榜标题
-dp.listen.start("https://www.iesdouyin.com/web/api/v2/hotsearch/billboard/word/")
-dp.get("https://www.iesdouyin.com/share/billboard/?id=0&utm_source=copy&utm_campaign=client_share&utm_medium=android&app=aweme")
+print(" 🕒 正在获取抖音社会榜...")
+# 获取社会榜标题
+dp.listen.start("board_type=2&board_sub_type=4")
+dp.get("https://so-landing.douyin.com/landings/hotlist?board_type=0&enter_method=hot_mini_view&is_no_width_reload=0&app_theme=light&pd=general")
+dp.ele('text:社会榜').click.left(by_js=True)
+time.sleep(1)
 r = dp.listen.wait()
 json_data = r.response.body
 # print(json_data)
-hot_titles = [item['word'] for item in json_data['word_list']]
-print(hot_titles)
-print(f" ✅ 成功获取 {len(hot_titles)} 个热点标题\n")
+seed_titles = [item['word'] for item in json_data['data']['word_list']]
+print(seed_titles)
+print(f" ✅ 成功获取 {len(seed_titles)} 个社会榜标题\n")
 
 # 逐一获取视频信息
 os.makedirs(folder_name, exist_ok=True)
 all_videos_data = []
 count = 0
-for hot_title in hot_titles:
+for hot_title in seed_titles:
     dp.listen.start("https://www.douyin.com/aweme/v1/web/general/search/stream/")
     dp.get("https://www.douyin.com/search/{}".format(hot_title))
     r = dp.listen.wait()
@@ -83,9 +85,7 @@ for hot_title in hot_titles:
         "likes": digg_count,
         "comments": comment_count,
         "collections": collect_count,
-        "shares": share_count,
-        "topic_tags": topic_tags,
-        "video_tags": video_tags
+        "shares": share_count
     }
     all_videos_data.append(video_info)
     video_content = requests.get(url=download_url, headers=headers).content
